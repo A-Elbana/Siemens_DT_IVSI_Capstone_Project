@@ -1,0 +1,48 @@
+# Add Python components
+add component -type Python -name client1
+add port -componentName client1 -name client1Ethernet -gateway python2DtEthernet
+add component -type Python -name client2
+add port -componentName client2 -name client2Ethernet -gateway python2DtEthernet
+add component -type Python -name client3
+add port -componentName client3 -name client3Ethernet -gateway python2DtEthernet
+
+# ------------------------------------------------------------------------------
+
+# Configure ports with MAC and IP addresses
+config port -componentName client1 -portName client1Ethernet -macAddress 12:34:56:77:9a:bc -ipAddress 192.168.1.13
+config port -componentName client2 -portName client2Ethernet -macAddress 12:34:56:78:9a:bc -ipAddress 192.168.1.10
+config port -componentName client3 -portName client3Ethernet -macAddress 33:33:00:00:00:16  -ipAddress 192.168.1.11
+
+# ------------------------------------------------------------------------------
+
+# Add port sockets for TCP/IP communication
+add portSocket -componentName client1 -portName client1Ethernet -ipPortNum 8050 -socketType server -protocol tcpIp
+add portSocket -componentName client2 -portName client2Ethernet -ipPortNum 8050 -socketType client -protocol tcpIp
+
+add portSocket -componentName client2 -portName client2Ethernet -ipPortNum 8070 -socketType client -protocol tcpIp
+add portSocket -componentName client3 -portName client3Ethernet -ipPortNum 8070 -socketType server -protocol tcpIp
+
+add portSocket -componentName client1 -portName client1Ethernet -ipPortNum 8080 -socketType client -protocol tcpIp
+add portSocket -componentName client3 -portName client3Ethernet -ipPortNum 8080 -socketType server -protocol tcpIp
+
+# Define signals for each component
+define componentSignals -componentName client1 -signals [heading_error:float:output,cross_track_error:float:output,steering_correction:float:input]
+define componentSignals -componentName client2 -signals [heading_error:float:input,cross_track_error:float:input,steering_correction:float:output]
+define componentSignals -componentName client3 -signals [heading_error:float:input,cross_track_error:float:input]
+
+# Connect signals between components
+connect signals -sourceSignal client1.heading_error -destSignal client2.heading_error -sourcePortName client1Ethernet -destPortName client2Ethernet
+connect signals -sourceSignal client1.cross_track_error -destSignal client2.cross_track_error -sourcePortName client1Ethernet -destPortName client2Ethernet
+connect signals -sourceSignal client2.steering_correction -destSignal client1.steering_correction -sourcePortName client2Ethernet -destPortName client1Ethernet
+
+connect signals -sourceSignal client1.heading_error -destSignal client3.heading_error -sourcePortName client1Ethernet -destPortName client3Ethernet
+connect signals -sourceSignal client1.cross_track_error -destSignal client3.cross_track_error -sourcePortName client1Ethernet -destPortName client3Ethernet
+
+# Set workspace and simulation parameters
+set workspaceDir .
+set digitalTwinName line_follower
+set simulationStep 0.01 s
+set totalSimTime 60 s
+
+# Generate the configuration
+generate

@@ -15,8 +15,8 @@ DEFAULT_MOTOR_TAU = 0.05
 MIN_SLIP = 0.25
 MAX_SLIP = 0.55
 DIV_EPSILON = 1e-6
-BEZIER_RESOLUTION = 60
-CROSS_TRACK_ERROR_STD = 5
+BEZIER_RESOLUTION = 50
+CROSS_TRACK_ERROR_STD = 3.0
 HEADING_ERROR_STD = 0.1
 
 @dataclass
@@ -96,14 +96,14 @@ class DiffDriveRobot:
         self.actual_vr = self.actual_vr + alpha * (target_vr - self.actual_vr)
         self.actual_vl = self.actual_vl + alpha * (target_vl - self.actual_vl)
 
-        noisy_vr = self.actual_vr * (1.0 - self.constant_slip)
-        noisy_vl = self.actual_vl * (1.0 - self.constant_slip)
+        noisy_vr = self.actual_vr * (1.0 + self.constant_slip)
+        noisy_vl = self.actual_vl
 
         W = self.angular_velocity(noisy_vr, noisy_vl)
         
         if abs(W) < DIV_EPSILON:
-            self.state.x = self.state.x + (noisy_vr * np.cos(self.state.yaw) * dt)
-            self.state.y = self.state.y + (noisy_vr * np.sin(self.state.yaw) * dt)
+            self.state.x = self.state.x + (noisy_vl * np.cos(self.state.yaw) * dt)
+            self.state.y = self.state.y + (noisy_vl * np.sin(self.state.yaw) * dt)
             return
             
         radius = self.R(noisy_vr, noisy_vl)

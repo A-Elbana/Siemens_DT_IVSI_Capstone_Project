@@ -1,10 +1,10 @@
 """
 Client 2: PID Controller
 ---------------------------------------------------
- STEPS
+ HOW TO USE
 ----------------
 1. Run vsiBuild -f vsiBuildCommands
-2. Copy controller.py into line_follower/src/client2/
+2. Use copy_components.bash to copy controller.py into line_follower/src/client2/
 3. Open the auto-generated file line_follower/src/client2/client2.py
 4. Paste each Code Block below into its matching custom code region
 """
@@ -12,13 +12,20 @@ Client 2: PID Controller
 
 # Code Block 1 - Global Variables & Definitions region
 from controller import PIDController
+import numpy as np
+
+# Parameters
+PID_KP = 4.6
+PID_KI = 1.47
+PID_KD = 9.8
+V_BASE = 20.0
 
 # ------------------------------------------------------------
 
 
 # Code Block 2 - Constructor region
-self.pid = PIDController(kp=4.6, ki=1.47, kd=9.8)
-self.V_base = 20.0
+self.pid = PIDController(kp=PID_KP, ki=PID_KI, kd=PID_KD)
+self.V_base = V_BASE
 
 # ------------------------------------------------------------
 
@@ -28,7 +35,7 @@ if dt > 0:
     lat_err = self.mySignals.cross_track_error
     head_err = self.mySignals.heading_error
     
-    cross_track_correction = math.atan2(lat_err, self.V_base)
+    cross_track_correction = np.arctan2(lat_err, self.V_base)
     
     total_error = head_err - cross_track_correction
     

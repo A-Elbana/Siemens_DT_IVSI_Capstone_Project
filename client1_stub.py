@@ -1,10 +1,10 @@
 """
 Client 1: Environment/Plant Simulator
 ---------------------------------------------------
- STEPS
+ HOW TO USE
 ----------------
 1. Run vsiBuild -f vsiBuildCommands
-2. Copy robot_model.py into line_follower/src/client1/
+2. Use copy_components.bash to copy robot_model.py into line_follower/src/client1/
 3. Open the auto-generated file line_follower/src/client1/client1.py
 4. Paste each Code Block below into its matching custom code region
 """
@@ -13,13 +13,21 @@ Client 1: Environment/Plant Simulator
 # Code Block 1 - Global Variables & Definitions region
 from robot_model import DiffDriveRobot, ReferencePath
 
+# Parameters
+START_X = 100.0
+START_Y = 400.0
+START_YAW = 0.0
+ROBOT_L = 25.0
+PATH_TYPE = "straight" # curved or straight
+V_BASE = 20.0 # Constant forward speed
+
 # ------------------------------------------------------------
 
 
 # Code Block 2 - Constructor region
-self.robot = DiffDriveRobot(x=100.0, y=400.0, yaw=0.0, L=25.0)
-self.path = ReferencePath(path_type="curved") # curved or straight
-self.V_base = 20.0 # Constant forward speed
+self.robot = DiffDriveRobot(x=START_X, y=START_Y, yaw=START_YAW, L=ROBOT_L)
+self.path = ReferencePath(path_type=PATH_TYPE) 
+self.V_base = V_BASE 
 
 # ------------------------------------------------------------
 
