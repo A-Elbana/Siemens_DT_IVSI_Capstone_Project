@@ -40,8 +40,9 @@ self.plotter.update_data(
     self.mySignals.cross_track_error, 
     self.mySignals.heading_error
 )
-if int(current_time) % KPI_PRINT_INTERVAL == 0:
-    self.plotter.print_final_kpis()
+if self.mySignals.target_reached == True:
+    self.plotter.close()
+    vsiCommonPythonApi.terminate()
 
 
 # Adjust this line

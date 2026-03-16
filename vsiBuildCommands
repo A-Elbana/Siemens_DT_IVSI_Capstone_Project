@@ -26,9 +26,9 @@ add portSocket -componentName client1 -portName client1Ethernet -ipPortNum 8080 
 add portSocket -componentName client3 -portName client3Ethernet -ipPortNum 8080 -socketType server -protocol tcpIp
 
 # Define signals for each component
-define componentSignals -componentName client1 -signals [heading_error:float:output,cross_track_error:float:output,steering_correction:float:input]
-define componentSignals -componentName client2 -signals [heading_error:float:input,cross_track_error:float:input,steering_correction:float:output]
-define componentSignals -componentName client3 -signals [heading_error:float:input,cross_track_error:float:input]
+define componentSignals -componentName client1 -signals [target_reached:bool:output,heading_error:float:output,cross_track_error:float:output,steering_correction:float:input]
+define componentSignals -componentName client2 -signals [target_reached:bool:input,heading_error:float:input,cross_track_error:float:input,steering_correction:float:output]
+define componentSignals -componentName client3 -signals [target_reached:bool:input,heading_error:float:input,cross_track_error:float:input]
 
 # Connect signals between components
 connect signals -sourceSignal client1.heading_error -destSignal client2.heading_error -sourcePortName client1Ethernet -destPortName client2Ethernet
@@ -37,6 +37,9 @@ connect signals -sourceSignal client2.steering_correction -destSignal client1.st
 
 connect signals -sourceSignal client1.heading_error -destSignal client3.heading_error -sourcePortName client1Ethernet -destPortName client3Ethernet
 connect signals -sourceSignal client1.cross_track_error -destSignal client3.cross_track_error -sourcePortName client1Ethernet -destPortName client3Ethernet
+
+connect signals -sourceSignal client1.target_reached -destSignal client2.target_reached -sourcePortName client1Ethernet -destPortName client2Ethernet
+connect signals -sourceSignal client1.target_reached -destSignal client3.target_reached -sourcePortName client1Ethernet -destPortName client3Ethernet
 
 # Set workspace and simulation parameters
 set workspaceDir .

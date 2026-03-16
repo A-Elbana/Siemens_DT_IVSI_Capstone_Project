@@ -42,3 +42,6 @@ if dt > 0:
     steering_correction = self.pid.compute(error=total_error, dt=dt)
     
     self.mySignals.steering_correction = float(steering_correction)
+
+if self.mySignals.target_reached == True:
+    vsiCommonPythonApi.terminate()

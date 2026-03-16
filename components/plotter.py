@@ -167,12 +167,48 @@ class RealTimePlotter:
         print(f"Steady-State Error: {head_sse:.4f} rad")
         print(f"{'='*40}\n")
 
+    def save_matplotlib_plots(self, filename="plot_kpis.png"):
+        """Generates and saves a Matplotlib figure of the errors."""
+        if not self.t_data:
+            return
+
+        # Fetch KPIs to display them directly on the plots
+        lat_os, lat_st, lat_sse = self.calculate_kpis(self.lat_data, tolerance=2.0)
+        head_os, head_st, head_sse = self.calculate_kpis(self.head_data, tolerance=0.05)
+
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+        fig.suptitle("Robot Path Tracking Errors Over Time", fontsize=14, fontweight='bold')
+
+        # 1. Lateral (Cross-Track) Error Subplot
+        ax1.plot(self.t_data, self.lat_data, color='blue', label='Lateral Error')
+        ax1.axhline(0, color='black', linestyle='--', linewidth=1)
+        ax1.set_ylabel("Lateral Error (units)")
+        ax1.set_title(f"Cross-Track Error (OS: {lat_os:.1f}, ST: {lat_st:.1f}s, SSE: {lat_sse:.1f})")
+        ax1.grid(True, linestyle=':', alpha=0.7)
+        ax1.legend(loc="upper right")
+
+        # 2. Heading Error Subplot
+        ax2.plot(self.t_data, self.head_data, color='red', label='Heading Error')
+        ax2.axhline(0, color='black', linestyle='--', linewidth=1)
+        ax2.set_xlabel("Time (s)")
+        ax2.set_ylabel("Heading Error (rad)")
+        ax2.set_title(f"Heading Error (OS: {head_os:.2f}, ST: {head_st:.2f}s, SSE: {head_sse:.3f})")
+        ax2.grid(True, linestyle=':', alpha=0.7)
+        ax2.legend(loc="upper right")
+
+        # Adjust layout and save
+        plt.tight_layout()
+        plt.savefig(filename, dpi=300, bbox_inches='tight')
+        plt.close(fig)
+        print(f"[INFO] High-resolution plots saved to: {filename}")
+
 
     def close(self):
         """
         Executes final operations including KPI calculation, image saving, and GUI teardown.
         """
         self.print_final_kpis()
+        self.save_matplotlib_plots()
         self.win.close()
         if self._app is not None:
             self._app.quit()

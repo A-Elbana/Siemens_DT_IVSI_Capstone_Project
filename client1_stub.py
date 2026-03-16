@@ -33,6 +33,8 @@ self.V_base = V_BASE
 
 # Code Block 3 - Main simulation loop region
 
+if self.mySignals.target_reached == True:
+    vsiCommonPythonApi.terminate()
 
 dt = self.simulationStep / 1_000_000_000.0
 
@@ -54,8 +56,7 @@ final_waypoint = self.path.waypoints[-1]
 dist_to_target = math.hypot(self.robot.state.x - final_waypoint[0], 
                             self.robot.state.y - final_waypoint[1])
 
-if dist_to_target < 10.0:
+if dist_to_target < 25.0:
     print(f"\n[SUCCESS] Target reached! Distance to target: {dist_to_target:.2f}")
     print("Terminating the simulation...")
-    
-    vsiCommonPythonApi.requestStop()
+    self.mySignals.target_reached = True
