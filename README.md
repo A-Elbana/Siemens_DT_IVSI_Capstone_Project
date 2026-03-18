@@ -2,6 +2,14 @@
 
 This project is a distributed simulation of a differential drive line-follower robot built on the Siemens Virtual System Interconnect (VSI) framework. It splits the system into three distinct clients that communicate over a simulated network.
 
+## Demo Video
+
+
+
+https://github.com/user-attachments/assets/adc3870e-9654-4b52-8203-b4dc8ec7482d
+
+
+
 ## System Components
 
 - **Client 1: Plant Simulator (`robot_model.py`)** Simulates the physical environment. It computes the differential drive kinematics, handles the reference path (straight or Bezier curves), calculates real-time lateral and heading errors, and stops the simulation when the target is reached.
